@@ -1,9 +1,19 @@
 group 'SawRecognizer'
 version '1.0'
 
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
+    }
+}
 apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
 
-sourceCompatibility = 1.5
+mainClassName = 'pl.edu.pw.eiti.cpoo.SawRecognizer'
+
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
