@@ -10,17 +10,28 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     private static final Logger logger = Logger.getLogger(ImagePanel.class.getName());
 
     private Image image;
-    private float scale = 1.0f;
-    private int currentDragStartX = 0;
-    private int currentDragStartY = 0;
-    private int currentTranslateX = 0;
-    private int currentTranslateY = 0;
-    private int accumulatedTranslateX = 0;
-    private int accumulatedTranslateY = 0;
+    private float scale;
+    private int currentDragStartX;
+    private int currentDragStartY;
+    private int currentTranslateX;
+    private int currentTranslateY;
+    private int accumulatedTranslateX;
+    private int accumulatedTranslateY;
 
     public ImagePanel() {
+        resetValues();
         addMouseWheelListener(this);
         addMouseListener(this);
+    }
+
+    private void resetValues() {
+        scale = 1.0f;
+        currentDragStartX = 0;
+        currentDragStartY = 0;
+        currentTranslateX = 0;
+        currentTranslateY = 0;
+        accumulatedTranslateX = 0;
+        accumulatedTranslateY = 0;
     }
 
     @Override
@@ -35,6 +46,7 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
 
     public void setImage(Image image) {
         this.image = image;
+        resetValues();
     }
 
     @Override
