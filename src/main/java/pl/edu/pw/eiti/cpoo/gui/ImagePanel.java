@@ -41,7 +41,7 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        scale += -0.1f * e.getWheelRotation();
+        scale = e.getWheelRotation() < 0 ? scale * 1.3f : scale / 1.3f;
         if (scale < 0.1f) {
             scale = 0.1f;
         }
