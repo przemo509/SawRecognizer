@@ -28,6 +28,8 @@ public class MainWindow extends JFrame {
         addComponents();
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        setBackgroundImage(MainMenuBar.getInstance().showImageChooser());
     }
 
     private void addComponents() {

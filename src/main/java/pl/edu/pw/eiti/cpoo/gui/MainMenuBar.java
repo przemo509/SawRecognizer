@@ -28,16 +28,7 @@ public class MainMenuBar extends JMenuBar {
 
     private void addLoadImageMenuItem(JMenu menu) {
         JMenuItem menuItem = new JMenuItem("Otwórz obraz");
-        menuItem.addActionListener(event -> {
-            JFileChooser fileChooser = new JFileChooser(AppProperties.getInstance().getLastOpenedPath());
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            int returnValue = fileChooser.showOpenDialog(this);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                String openedPath = fileChooser.getSelectedFile().getAbsolutePath();
-                AppProperties.getInstance().setLastOpenedPath(new File(openedPath).getParent());
-                MainWindow.getInstance().setBackgroundImage(openedPath);
-            }
-        });
+        menuItem.addActionListener(event -> MainWindow.getInstance().setBackgroundImage(showImageChooser()));
         menu.add(menuItem);
     }
 
@@ -47,4 +38,15 @@ public class MainMenuBar extends JMenuBar {
         menu.add(menuItem);
     }
 
+    public String showImageChooser() {
+        JFileChooser fileChooser = new JFileChooser(AppProperties.getInstance().getLastOpenedPath());
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int returnValue = fileChooser.showOpenDialog(this);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            String openedPath = fileChooser.getSelectedFile().getAbsolutePath();
+            AppProperties.getInstance().setLastOpenedPath(new File(openedPath).getParent());
+            return openedPath;
+        }
+        return null;
+    }
 }
