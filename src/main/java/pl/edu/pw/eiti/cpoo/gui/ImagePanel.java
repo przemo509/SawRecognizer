@@ -39,8 +39,13 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
         super.paintComponent(g);
 
         if (image != null) {
-            int smallerSize = (int) (Math.min(getWidth(), getHeight()) * scale);
-            g.drawImage(image, currentTranslateX + accumulatedTranslateX, currentTranslateY + accumulatedTranslateY, smallerSize, smallerSize, null);
+            g.drawImage(
+                    image,
+                    currentTranslateX + accumulatedTranslateX,
+                    currentTranslateY + accumulatedTranslateY,
+                    (int) (scale * image.getWidth(null)),
+                    (int) (scale * image.getHeight(null)),
+                    null);
         }
     }
 
