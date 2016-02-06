@@ -5,24 +5,24 @@ import javax.swing.*;
 public class MainToolBar extends JToolBar {
     private static MainToolBar instance = new MainToolBar();
 
-    private JLabel imageName;
+    private JLabel status;
 
     public static MainToolBar getInstance() {
         return instance;
     }
 
     private MainToolBar() {
-        addImageName();
+        addStatus();
+        setFloatable(false);
     }
 
-    private void addImageName() {
-        add(new JLabel("Obraz: "));
-        imageName = new JLabel("-");
-        add(imageName);
+    private void addStatus() {
         addSeparator();
+        status = new JLabel("brak obrazu");
+        add(status);
     }
 
-    public void setImageName(String imageName) {
-        this.imageName.setText(imageName);
+    public void setStatus(String status) {
+        this.status.setText(status);
     }
 }

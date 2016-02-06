@@ -4,6 +4,7 @@ package pl.edu.pw.eiti.cpoo.gui;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -41,9 +42,10 @@ public class MainWindow extends JFrame {
     void setBackgroundImage(String imageFilePath) {
         try {
             File imageFile = new File(imageFilePath);
-            MainToolBar.getInstance().setImageName(imageFile.getName());
 
-            imagePanel.setImage(ImageIO.read(imageFile));
+            BufferedImage image = ImageIO.read(imageFile);
+            imagePanel.setImage(image);
+            MainToolBar.getInstance().setStatus(imageFile.getName() + " [" + image.getWidth() + "x" + image.getHeight() + "]");
             repaint();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "{0}", e);
