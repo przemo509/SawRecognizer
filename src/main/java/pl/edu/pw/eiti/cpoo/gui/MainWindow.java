@@ -34,6 +34,8 @@ public class MainWindow extends JFrame {
 
         setLayout(new BorderLayout());
         add(MainToolBar.getInstance(), BorderLayout.PAGE_START);
+        imagePanel = new ImagePanel();
+        add(imagePanel, BorderLayout.CENTER);
     }
 
     void setBackgroundImage(String imageFilePath) {
@@ -41,8 +43,8 @@ public class MainWindow extends JFrame {
             File imageFile = new File(imageFilePath);
             MainToolBar.getInstance().setImageName(imageFile.getName());
 
-            imagePanel = new ImagePanel(ImageIO.read(imageFile));
-            add(imagePanel, BorderLayout.CENTER);
+            imagePanel.setImage(ImageIO.read(imageFile));
+            repaint();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "{0}", e);
         }
