@@ -13,7 +13,7 @@ public class MainWindow extends JFrame {
     private static final Logger logger = Logger.getLogger(MainWindow.class.getName());
     private static MainWindow instance = new MainWindow();
 
-    private JLabel backgroundImage;
+    private ImagePanel imagePanel;
 
     public static MainWindow getInstance() {
         return instance;
@@ -34,15 +34,15 @@ public class MainWindow extends JFrame {
 
         setLayout(new BorderLayout());
         add(MainToolBar.getInstance(), BorderLayout.PAGE_START);
-        backgroundImage = new JLabel();
-        add(backgroundImage, BorderLayout.CENTER);
     }
 
     void setBackgroundImage(String imageFilePath) {
         try {
             File imageFile = new File(imageFilePath);
-            backgroundImage.setIcon(new ImageIcon(ImageIO.read(imageFile)));
             MainToolBar.getInstance().setImageName(imageFile.getName());
+
+            imagePanel = new ImagePanel(ImageIO.read(imageFile));
+            add(imagePanel, BorderLayout.CENTER);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "{0}", e);
         }
