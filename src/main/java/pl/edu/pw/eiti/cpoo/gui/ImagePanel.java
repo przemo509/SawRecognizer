@@ -3,11 +3,9 @@ package pl.edu.pw.eiti.cpoo.gui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
-    private static final Logger logger = Logger.getLogger(ImagePanel.class.getName());
+    public static final float SCALING_SPEED = 1.3f;
 
     private Image image;
     private float scale;
@@ -18,7 +16,33 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     private int accumulatedTranslateX;
     private int accumulatedTranslateY;
 
-    public ImagePanel() {
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if (image != null) {
+            g.drawImage(
+                    image,
+                    currentTranslateX + accumulatedTranslateX,
+                    currentTranslateY + accumulatedTranslateY,
+                    getScaledImageWidth(),
+                    getScaledImageHeight(),
+                    null);
+        }
+    }
+
+    private int getScaledImageWidth() {
+        return (int) (scale * image.getWidth(null));
+    }
+
+    private int getScaledImageHeight() {
+        return (int) (scale * image.getHeight(null));
+    }
+
+    public void setImage(Image image) {
+        removeMouseListener(this);
+        removeMouseWheelListener(this);
+        this.image = image;
         resetValues();
         addMouseWheelListener(this);
         addMouseListener(this);
@@ -35,32 +59,33 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     }
 
     @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        if (image != null) {
-            g.drawImage(
-                    image,
-                    currentTranslateX + accumulatedTranslateX,
-                    currentTranslateY + accumulatedTranslateY,
-                    (int) (scale * image.getWidth(null)),
-                    (int) (scale * image.getHeight(null)),
-                    null);
-        }
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-        resetValues();
-    }
-
-    @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        scale = e.getWheelRotation() < 0 ? scale * 1.3f : scale / 1.3f;
-        if (scale < 0.1f) {
-            scale = 0.1f;
+        int pivotOldX = ensureWithinInterval(e.getX(), accumulatedTranslateX, accumulatedTranslateX + getScaledImageWidth());
+        int pivotOldY = ensureWithinInterval(e.getY(), accumulatedTranslateY, accumulatedTranslateY + getScaledImageHeight());
+
+        scale = e.getWheelRotation() < 0 ? scale * SCALING_SPEED : scale / SCALING_SPEED;
+        if (scaleToSmall()) {
+            scale *= SCALING_SPEED;
         }
+
+        accumulatedTranslateX = (int) (pivotOldX * (1f - scale));
+        accumulatedTranslateY = (int) (pivotOldY * (1f - scale));
+
         repaint();
+    }
+
+    private int ensureWithinInterval(int n, int start, int end) {
+        if (n < start) {
+            return start;
+        } else if (n > end) {
+            return end;
+        } else {
+            return n;
+        }
+    }
+
+    private boolean scaleToSmall() {
+        return getScaledImageWidth() < 10 || getScaledImageHeight() < 10;
     }
 
     @Override
@@ -68,7 +93,6 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
         currentDragStartX = e.getX();
         currentDragStartY = e.getY();
         addMouseMotionListener(this);
-        logger.log(Level.FINE, "Start moving at ({0}, {1})", new Object[]{currentDragStartX, currentDragStartY});
     }
 
     @Override
@@ -78,13 +102,11 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
         currentTranslateX = 0;
         currentTranslateY = 0;
         removeMouseMotionListener(this);
-        logger.log(Level.FINE, "Stop moving (mouse release).");
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
         removeMouseMotionListener(this);
-        logger.log(Level.FINE, "Stop moving (mouse exit).");
     }
 
     @Override
@@ -92,7 +114,6 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
         currentTranslateX = e.getX() - currentDragStartX;
         currentTranslateY = e.getY() - currentDragStartY;
         repaint();
-        logger.log(Level.FINE, "Moving to ({0}, {1})", new Object[]{e.getX(), e.getY()});
     }
 
     @Override
