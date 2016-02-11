@@ -9,13 +9,13 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
 
     protected final int imageWidth;
     protected final int imageHeight;
-    private int pixelSize;
+    private static int pixelSize;
     private int currentDragStartX;
     private int currentDragStartY;
     private int currentTranslateX;
     private int currentTranslateY;
-    private int accumulatedTranslateX;
-    private int accumulatedTranslateY;
+    private static int accumulatedTranslateX;
+    private static int accumulatedTranslateY;
 
     public ImagePanel(int imageWidth, int imageHeight) {
         this.imageWidth = imageWidth;
