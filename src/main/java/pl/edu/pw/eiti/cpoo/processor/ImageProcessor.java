@@ -61,8 +61,15 @@ public class ImageProcessor {
     }
 
     public static boolean[][] binarize(int[][] image, int threshold, double tailFactor) {
-        boolean[][] object = (boolean[][]) Array.newInstance(boolean.class, image.length, image[0].length);
-        boolean[][] visited = (boolean[][]) Array.newInstance(boolean.class, image.length, image[0].length);
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] visited = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        boolean[][] object = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 0; i < imageWidth; i++) {
+            for (int j = 0; j < imageHeight; j++) {
+                object[i][j] = true;
+            }
+        }
         Stack<Pixel> pixelStack = new Stack<>();
         pixelStack.push(new Pixel(0, 0, image[0][0])); // add first pixel to stack
 
@@ -72,10 +79,10 @@ public class ImageProcessor {
 
             int value = image[p.x][p.y];
             if (value >= p.referencedPixelValue - threshold && value <= p.referencedPixelValue + threshold) {
-                object[p.x][p.y] = true;
+                // still background
+                object[p.x][p.y] = false;
+                pushNeighboursToStack(pixelStack, visited, p, (int) ((1 - tailFactor) * value + tailFactor * p.referencedPixelValue));
             }
-
-            pushNeighboursToStack(pixelStack, visited, p, (int) ((1 - tailFactor) * value + tailFactor * p.referencedPixelValue));
         }
         return object;
     }
