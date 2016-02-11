@@ -90,7 +90,7 @@ public class MainWindow extends JFrame {
         clearEqualizedHistogramTab();
         clearBinarizedTab();
 
-        grayScaleImage = new GrayScaleImagePanel(originalImage.getImage());
+        grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
         tabbedPane.addTab("Skala szarości", grayScaleImage);
         tabbedPane.setSelectedComponent(grayScaleImage);
     }

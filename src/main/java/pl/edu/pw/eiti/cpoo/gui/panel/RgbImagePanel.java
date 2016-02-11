@@ -6,24 +6,24 @@ import java.lang.reflect.Array;
 
 public class RgbImagePanel extends ImagePanel {
 
-    private final Color[][] image;
+    private final int[][] rgb;
 
     public RgbImagePanel(BufferedImage image) {
         super(image.getWidth(), image.getHeight());
-        this.image = (Color[][]) Array.newInstance(Color.class, imageWidth, imageHeight);
+        this.rgb = (int[][]) Array.newInstance(int.class, imageWidth, imageHeight);
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
-                this.image[i][j] = new Color(image.getRGB(i, j));
+                this.rgb[i][j] = image.getRGB(i, j);
             }
         }
     }
 
     @Override
     public Color getColor(int i, int j) {
-        return image[i][j];
+        return new Color(rgb[i][j]);
     }
 
-    public Color[][] getImage() {
-        return image;
+    public int[][] getRgbImage() {
+        return rgb;
     }
 }
