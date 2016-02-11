@@ -9,7 +9,12 @@ public class MainToolBar extends JToolBar {
 
     private JButton grayScale;
     private JButton equalizedHistogram;
-    private JButton binarized;
+    private JButton binarize;
+
+    private JPanel todoPanel;
+    private JButton todo;
+    private JSlider binarizedThreshold;
+    private JSlider binarizedTailFactor;
 
     public static MainToolBar getInstance() {
         return instance;
@@ -24,7 +29,8 @@ public class MainToolBar extends JToolBar {
     private void addComponents() {
         addGrayScale();
         addEqualizedHistogram();
-        addBinarized();
+        addBinarize();
+        addTodo();
         addStatus();
     }
 
@@ -36,7 +42,8 @@ public class MainToolBar extends JToolBar {
     private void disableButtonsButOne(JButton buttonToEnable) {
         grayScale.setVisible(grayScale == buttonToEnable);
         equalizedHistogram.setVisible(equalizedHistogram == buttonToEnable);
-        binarized.setVisible(binarized == buttonToEnable);
+        binarize.setVisible(binarize == buttonToEnable);
+        todoPanel.setVisible(todo == buttonToEnable);
     }
 
     public void disableAllButtons() {
@@ -52,7 +59,11 @@ public class MainToolBar extends JToolBar {
     }
 
     public void enableBinarizeButton() {
-        disableButtonsButOne(binarized);
+        disableButtonsButOne(binarize);
+    }
+
+    public void enableTodoButton() {
+        disableButtonsButOne(todo);
     }
 
     private void addGrayScale() {
@@ -67,10 +78,38 @@ public class MainToolBar extends JToolBar {
         add(equalizedHistogram);
     }
 
-    private void addBinarized() {
-        binarized = new JButton("Na binarny");
-        binarized.addActionListener(e -> MainWindow.getInstance().createBinarizedImage());
-        add(binarized);
+    private void addBinarize() {
+        binarize = new JButton("Na binarny");
+        binarize.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0));
+        add(binarize);
+    }
+
+    private void addTodo() {
+        todoPanel = new JPanel();
+
+        todo = new JButton("TODO");
+//        todo.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizeThreshold.getValue(), binarizeTailFactor.getValue() / 100.0));
+        todoPanel.add(todo);
+
+        JLabel thresholdLabel = new JLabel("");
+        todoPanel.add(thresholdLabel);
+        binarizedThreshold = new JSlider(0, 255, 10);
+        binarizedThreshold.addChangeListener(e -> {
+            thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
+            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0);
+        });
+        todoPanel.add(binarizedThreshold);
+
+        JLabel tailFactorLabel = new JLabel("");
+        todoPanel.add(tailFactorLabel);
+        binarizedTailFactor = new JSlider(0, 100, 10);
+        binarizedTailFactor.addChangeListener(e -> {
+            tailFactorLabel.setText("Wpływ sąsiadów: [" + binarizedTailFactor.getValue() + "]");
+            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0);
+        });
+        todoPanel.add(binarizedTailFactor);
+
+        add(todoPanel);
     }
 
     private void addStatus() {

@@ -61,6 +61,8 @@ public class MainWindow extends JFrame {
             MainToolBar.getInstance().enableEqualizedButton();
         } else if (selectedTab == equalHistogramImage) {
             MainToolBar.getInstance().enableBinarizeButton();
+        } else if (selectedTab == binarizedImage) {
+            MainToolBar.getInstance().enableTodoButton();
         } else {
             MainToolBar.getInstance().disableAllButtons();
         }
@@ -102,10 +104,10 @@ public class MainWindow extends JFrame {
         tabbedPane.setSelectedComponent(equalHistogramImage);
     }
 
-    public void createBinarizedImage() {
+    public void createBinarizedImage(int threshold, double tailFactor) {
         clearBinarizedTab();
 
-        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage()));
+        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold, tailFactor));
         tabbedPane.addTab("Binarny", binarizedImage);
         tabbedPane.setSelectedComponent(binarizedImage);
     }

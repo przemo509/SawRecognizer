@@ -4,11 +4,9 @@ import java.lang.reflect.Array;
 import java.util.Stack;
 
 public class ImageProcessor {
-
-    private static final int THRESHOLD = 10;
     public static final int BYTE = 256;
 
-    public static boolean[][] binarize(int[][] image) {
+    public static boolean[][] binarize(int[][] image, int threshold, double tailFactor) {
         boolean[][] object = (boolean[][]) Array.newInstance(boolean.class, image.length, image[0].length);
         boolean[][] visited = (boolean[][]) Array.newInstance(boolean.class, image.length, image[0].length);
         Stack<Pixel> pixelStack = new Stack<>();
@@ -19,11 +17,11 @@ public class ImageProcessor {
             visited[p.x][p.y] = true;
 
             int value = image[p.x][p.y];
-            if (value >= p.referencedPixelValue - THRESHOLD && value <= p.referencedPixelValue + THRESHOLD) {
+            if (value >= p.referencedPixelValue - threshold && value <= p.referencedPixelValue + threshold) {
                 object[p.x][p.y] = true;
             }
 
-            pushNeighboursToStack(pixelStack, visited, p, (int) (0.9 * value + 0.1 * p.referencedPixelValue));
+            pushNeighboursToStack(pixelStack, visited, p, (int) ((1 - tailFactor) * value + tailFactor * p.referencedPixelValue));
         }
         return object;
     }
@@ -60,16 +58,16 @@ public class ImageProcessor {
 
         int minHCum = hCum[0];
         for (int i = 1; i < BYTE; i++) {
-            if(hCum[i] != 0) {
+            if (hCum[i] != 0) {
                 minHCum = hCum[i];
                 break;
             }
         }
 
-        double factor = (double)(BYTE - 1) / (imageWidth * imageHeight - minHCum);
+        double factor = (double) (BYTE - 1) / (imageWidth * imageHeight - minHCum);
         int[] hEq = new int[BYTE]; // histogram equalized
         for (int i = 0; i < BYTE; i++) {
-            hEq[i] = (int)((hCum[i] - minHCum) * factor);
+            hEq[i] = (int) ((hCum[i] - minHCum) * factor);
         }
 
         int[][] equalizedImage = (int[][]) Array.newInstance(int.class, imageWidth, imageHeight);
