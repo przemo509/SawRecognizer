@@ -5,8 +5,11 @@ import javax.swing.*;
 public class MainToolBar extends JToolBar {
     private static MainToolBar instance = new MainToolBar();
 
-    private JButton binarize;
     private JLabel status;
+
+    private JButton grayScale;
+    private JButton equalizedHistogram;
+    private JButton binarized;
 
     public static MainToolBar getInstance() {
         return instance;
@@ -19,23 +22,48 @@ public class MainToolBar extends JToolBar {
     }
 
     private void addComponents() {
-        addBinarize();
+        addGrayScale();
+        addEqualizedHistogram();
+        addBinarized();
         addStatus();
     }
 
     private void resetState() {
         status.setText("brak obrazu");
-        disableButtons();
+        disableButtonsButOne(grayScale);
     }
 
-    private void disableButtons() {
-        binarize.setEnabled(false);
+    private void disableButtonsButOne(JButton buttonToEnable) {
+        grayScale.setEnabled(grayScale == buttonToEnable);
+        equalizedHistogram.setEnabled(equalizedHistogram == buttonToEnable);
+        binarized.setEnabled(binarized == buttonToEnable);
     }
 
-    private void addBinarize() {
-        binarize = new JButton("Binaryzuj");
-        binarize.addActionListener(e -> MainWindow.getInstance().binarizeOriginalImage());
-        add(binarize);
+    private void addGrayScale() {
+        grayScale = new JButton("Do skali szarości");
+        grayScale.addActionListener(e -> {
+            MainWindow.getInstance().createGrayScaleImage();
+            disableButtonsButOne(equalizedHistogram);
+        });
+        add(grayScale);
+    }
+
+    private void addEqualizedHistogram() {
+        equalizedHistogram = new JButton("Wyrównaj histogram");
+        equalizedHistogram.addActionListener(e -> {
+            MainWindow.getInstance().createEqualHistogramImage();
+            disableButtonsButOne(binarized);
+        });
+        add(equalizedHistogram);
+    }
+
+    private void addBinarized() {
+        binarized = new JButton("Na binarny");
+        binarized.addActionListener(e -> {
+            MainWindow.getInstance().createBinarizedImage();
+            disableButtonsButOne(null);
+        });
+        add(binarized);
     }
 
     private void addStatus() {
@@ -46,10 +74,5 @@ public class MainToolBar extends JToolBar {
 
     public void setStatus(String status) {
         this.status.setText(status);
-    }
-
-    public void allowBinarize() {
-        disableButtons();
-        binarize.setEnabled(true);
     }
 }

@@ -2,6 +2,7 @@ package pl.edu.pw.eiti.cpoo.gui;
 
 
 import pl.edu.pw.eiti.cpoo.gui.panel.BinaryImagePanel;
+import pl.edu.pw.eiti.cpoo.gui.panel.GrayScaleImagePanel;
 import pl.edu.pw.eiti.cpoo.gui.panel.RgbImagePanel;
 import pl.edu.pw.eiti.cpoo.processor.ImageProcessor;
 
@@ -20,6 +21,8 @@ public class MainWindow extends JFrame {
 
     private JTabbedPane tabbedPane;
     private RgbImagePanel originalImage;
+    private GrayScaleImagePanel grayScaleImage;
+    private GrayScaleImagePanel equalHistogramImage;
     private BinaryImagePanel binarizedImage;
 
     public static MainWindow getInstance() {
@@ -58,16 +61,28 @@ public class MainWindow extends JFrame {
             originalImage = new RgbImagePanel(image);
             tabbedPane.addTab("Oryginał", originalImage);
             MainToolBar.getInstance().setStatus(imageFile.getName() + " [" + image.getWidth() + "x" + image.getHeight() + "]");
-            MainToolBar.getInstance().allowBinarize();
             repaint();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "{0}", e);
         }
     }
 
-    public void binarizeOriginalImage() {
-        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(originalImage.getImage()));
+    public void createGrayScaleImage() {
+        grayScaleImage = new GrayScaleImagePanel(originalImage.getImage());
+        tabbedPane.addTab("Skala szarości", grayScaleImage);
+        tabbedPane.setSelectedComponent(grayScaleImage);
+    }
+
+    public void createEqualHistogramImage() {
+        equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
+        tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
+        tabbedPane.setSelectedComponent(equalHistogramImage);
+    }
+
+    public void createBinarizedImage() {
+        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage()));
         tabbedPane.addTab("Binarny", binarizedImage);
+        tabbedPane.setSelectedComponent(binarizedImage);
     }
 }
 
