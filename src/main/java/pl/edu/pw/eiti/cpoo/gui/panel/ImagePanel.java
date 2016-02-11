@@ -9,13 +9,13 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
 
     protected final int imageWidth;
     protected final int imageHeight;
-    private static int pixelSize;
+    private static int pixelSize = 1;
     private int currentDragStartX;
     private int currentDragStartY;
     private int currentTranslateX;
     private int currentTranslateY;
-    private static int accumulatedTranslateX;
-    private static int accumulatedTranslateY;
+    private static int accumulatedTranslateX = 0;
+    private static int accumulatedTranslateY = 0;
 
     public ImagePanel(int imageWidth, int imageHeight) {
         this.imageWidth = imageWidth;
@@ -26,13 +26,10 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
     }
 
     private void resetValues() {
-        pixelSize = 1;
         currentDragStartX = 0;
         currentDragStartY = 0;
         currentTranslateX = 0;
         currentTranslateY = 0;
-        accumulatedTranslateX = 0;
-        accumulatedTranslateY = 0;
     }
 
     @Override
