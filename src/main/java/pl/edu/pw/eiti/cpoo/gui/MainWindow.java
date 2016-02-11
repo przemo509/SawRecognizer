@@ -47,7 +47,23 @@ public class MainWindow extends JFrame {
         setLayout(new BorderLayout());
         add(MainToolBar.getInstance(), BorderLayout.PAGE_START);
         tabbedPane = new JTabbedPane();
+        tabbedPane.addChangeListener(e -> onTabSwitch());
         add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    private void onTabSwitch() {
+        Component selectedTab = tabbedPane.getSelectedComponent();
+        if (selectedTab == null) {
+            return;
+        } else if (selectedTab == originalImage) {
+            MainToolBar.getInstance().enableGrayScaleButton();
+        } else if (selectedTab == grayScaleImage) {
+            MainToolBar.getInstance().enableEqualizedButton();
+        } else if (selectedTab == equalHistogramImage) {
+            MainToolBar.getInstance().enableBinarizeButton();
+        } else {
+            MainToolBar.getInstance().disableAllButtons();
+        }
     }
 
     void setBackgroundImage(String imageFilePath) {
@@ -68,21 +84,45 @@ public class MainWindow extends JFrame {
     }
 
     public void createGrayScaleImage() {
+        clearGrayScaleTab();
+        clearEqualizedHistogramTab();
+        clearBinarizedTab();
+
         grayScaleImage = new GrayScaleImagePanel(originalImage.getImage());
         tabbedPane.addTab("Skala szarości", grayScaleImage);
         tabbedPane.setSelectedComponent(grayScaleImage);
     }
 
     public void createEqualHistogramImage() {
+        clearEqualizedHistogramTab();
+        clearBinarizedTab();
+
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
         tabbedPane.setSelectedComponent(equalHistogramImage);
     }
 
     public void createBinarizedImage() {
+        clearBinarizedTab();
+
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage()));
         tabbedPane.addTab("Binarny", binarizedImage);
         tabbedPane.setSelectedComponent(binarizedImage);
+    }
+
+    private void clearGrayScaleTab() {
+        tabbedPane.remove(grayScaleImage);
+        grayScaleImage = null;
+    }
+
+    private void clearEqualizedHistogramTab() {
+        tabbedPane.remove(equalHistogramImage);
+        equalHistogramImage = null;
+    }
+
+    private void clearBinarizedTab() {
+        tabbedPane.remove(binarizedImage);
+        binarizedImage = null;
     }
 }
 
