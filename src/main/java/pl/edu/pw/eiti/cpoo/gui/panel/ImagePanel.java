@@ -1,14 +1,15 @@
-package pl.edu.pw.eiti.cpoo.gui;
+package pl.edu.pw.eiti.cpoo.gui.panel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
-    public static final float SCALING_SPEED = 1.3f;
+public abstract class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
+    public static final int SCALING_SPEED = 1;
 
-    private Image image;
-    private float scale;
+    protected final int imageWidth;
+    protected final int imageHeight;
+    private int pixelSize;
     private int currentDragStartX;
     private int currentDragStartY;
     private int currentTranslateX;
@@ -16,40 +17,16 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     private int accumulatedTranslateX;
     private int accumulatedTranslateY;
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        if (image != null) {
-            g.drawImage(
-                    image,
-                    currentTranslateX + accumulatedTranslateX,
-                    currentTranslateY + accumulatedTranslateY,
-                    getScaledImageWidth(),
-                    getScaledImageHeight(),
-                    null);
-        }
-    }
-
-    private int getScaledImageWidth() {
-        return (int) (scale * image.getWidth(null));
-    }
-
-    private int getScaledImageHeight() {
-        return (int) (scale * image.getHeight(null));
-    }
-
-    public void setImage(Image image) {
-        removeMouseListener(this);
-        removeMouseWheelListener(this);
-        this.image = image;
+    public ImagePanel(int imageWidth, int imageHeight) {
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageHeight;
         resetValues();
         addMouseWheelListener(this);
         addMouseListener(this);
     }
 
     private void resetValues() {
-        scale = 1.0f;
+        pixelSize = 1;
         currentDragStartX = 0;
         currentDragStartY = 0;
         currentTranslateX = 0;
@@ -59,17 +36,37 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        int pivotOldX = ensureWithinInterval(e.getX(), accumulatedTranslateX, accumulatedTranslateX + getScaledImageWidth());
-        int pivotOldY = ensureWithinInterval(e.getY(), accumulatedTranslateY, accumulatedTranslateY + getScaledImageHeight());
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        scale = e.getWheelRotation() < 0 ? scale * SCALING_SPEED : scale / SCALING_SPEED;
-        if (scaleToSmall()) {
-            scale *= SCALING_SPEED;
+        g.translate(currentTranslateX + accumulatedTranslateX, currentTranslateY + accumulatedTranslateY);
+        drawImage(g);
+    }
+
+    private void drawImage(Graphics g) {
+        for (int i = 0; i < imageWidth; i++) {
+            for (int j = 0; j < imageHeight; j++) {
+                g.setColor(getColor(i, j));
+                g.fillRect(pixelSize*i, pixelSize*j, pixelSize, pixelSize);
+            }
         }
 
-        accumulatedTranslateX = (int) (pivotOldX * (1f - scale));
-        accumulatedTranslateY = (int) (pivotOldY * (1f - scale));
+    }
+
+    public abstract Color getColor(int i, int j);
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int pivotOldX = ensureWithinInterval(e.getX(), accumulatedTranslateX, accumulatedTranslateX + pixelSize * imageWidth);
+        int pivotOldY = ensureWithinInterval(e.getY(), accumulatedTranslateY, accumulatedTranslateY + pixelSize * imageHeight);
+
+        pixelSize += e.getWheelRotation() < 0 ? SCALING_SPEED : -SCALING_SPEED;
+        if (pixelSize < 1) {
+            pixelSize = 1;
+        }
+
+        accumulatedTranslateX = (int) (pivotOldX * (1f - pixelSize));
+        accumulatedTranslateY = (int) (pivotOldY * (1f - pixelSize));
 
         repaint();
     }
@@ -82,10 +79,6 @@ public class ImagePanel extends JPanel implements MouseWheelListener, MouseListe
         } else {
             return n;
         }
-    }
-
-    private boolean scaleToSmall() {
-        return getScaledImageWidth() < 10 || getScaledImageHeight() < 10;
     }
 
     @Override
