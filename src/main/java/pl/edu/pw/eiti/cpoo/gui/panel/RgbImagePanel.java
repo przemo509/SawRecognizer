@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 import java.lang.reflect.Array;
 
 public class RgbImagePanel extends ImagePanel {
-
     private final int[][] rgb;
 
     public RgbImagePanel(BufferedImage image) {

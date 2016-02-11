@@ -3,7 +3,6 @@ package pl.edu.pw.eiti.cpoo.gui.panel;
 import java.awt.*;
 
 public class BinaryImagePanel extends ImagePanel {
-
     private final boolean[][] image;
 
     public BinaryImagePanel(boolean[][] image) {
