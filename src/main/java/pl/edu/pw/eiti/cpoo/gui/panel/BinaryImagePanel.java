@@ -19,15 +19,20 @@ public class BinaryImagePanel extends ImagePanel {
         return image;
     }
 
-    public void markPixels(int pixelSize) {
+    public int markPixels(int pixelSize) {
+        int markedPixelsCount = 0;
+
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
                 if(image[i][j]) {
                     markPixel(i, j, pixelSize);
+                    markedPixelsCount++;
                 }
             }
         }
+
         repaint();
+        return markedPixelsCount;
     }
 
     private void markPixel(int x, int y, int pixelSize) {
