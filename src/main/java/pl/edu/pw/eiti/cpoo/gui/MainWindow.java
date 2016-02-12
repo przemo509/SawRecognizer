@@ -27,6 +27,7 @@ public class MainWindow extends JFrame {
     private BinaryImagePanel medianImage;
     private BinaryImagePanel erodedImage;
     private BinaryImagePanel filledGapsImage;
+    private BinaryImagePanel dilatedImage;
 
     public static MainWindow getInstance() {
         return instance;
@@ -70,6 +71,10 @@ public class MainWindow extends JFrame {
             MainToolBar.getInstance().enableErodeButton();
         } else if (selectedTab == erodedImage) {
             MainToolBar.getInstance().enableFillGapsButton();
+        } else if (selectedTab == filledGapsImage) {
+            MainToolBar.getInstance().enableDilateButton();
+        } else if (selectedTab == dilatedImage) {
+            MainToolBar.getInstance().enableDetectCorners();
         } else {
             MainToolBar.getInstance().disableAllButtons();
         }
@@ -99,6 +104,7 @@ public class MainWindow extends JFrame {
         clearMedianImage();
         clearErodedTab();
         clearFillGapsTab();
+        clearDilatedTab();
 
         grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
         tabbedPane.addTab("Skala szarości", grayScaleImage);
@@ -111,6 +117,7 @@ public class MainWindow extends JFrame {
         clearMedianImage();
         clearErodedTab();
         clearFillGapsTab();
+        clearDilatedTab();
 
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
@@ -122,6 +129,7 @@ public class MainWindow extends JFrame {
         clearMedianImage();
         clearErodedTab();
         clearFillGapsTab();
+        clearDilatedTab();
 
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
         tabbedPane.addTab("Binarny", binarizedImage);
@@ -132,6 +140,7 @@ public class MainWindow extends JFrame {
         clearMedianImage();
         clearErodedTab();
         clearFillGapsTab();
+        clearDilatedTab();
 
         medianImage = new BinaryImagePanel(ImageProcessor.median(binarizedImage.getImage()));
         tabbedPane.addTab("Po medianie", medianImage);
@@ -141,6 +150,7 @@ public class MainWindow extends JFrame {
     public void createErodedImage(int erosionSteps) {
         clearErodedTab();
         clearFillGapsTab();
+        clearDilatedTab();
 
         erodedImage = new BinaryImagePanel(ImageProcessor.erode(medianImage.getImage(), erosionSteps));
         tabbedPane.addTab("Po erozji", erodedImage);
@@ -149,11 +159,19 @@ public class MainWindow extends JFrame {
 
     public void createFilledGapsImage() {
         clearFillGapsTab();
+        clearDilatedTab();
 
         filledGapsImage = new BinaryImagePanel(ImageProcessor.fillGaps(erodedImage.getImage()));
         tabbedPane.addTab("Po wypełnieniu", filledGapsImage);
         tabbedPane.setSelectedComponent(filledGapsImage);
+    }
 
+    public void createDilatedImage(int dilationSteps) {
+        clearDilatedTab();
+
+        dilatedImage = new BinaryImagePanel(ImageProcessor.dilate(filledGapsImage.getImage(), dilationSteps));
+        tabbedPane.addTab("Po dylacji", dilatedImage);
+        tabbedPane.setSelectedComponent(dilatedImage);
     }
 
     private void clearGrayScaleTab() {
@@ -184,6 +202,11 @@ public class MainWindow extends JFrame {
     private void clearFillGapsTab() {
         tabbedPane.remove(filledGapsImage);
         filledGapsImage = null;
+    }
+
+    private void clearDilatedTab() {
+        tabbedPane.remove(dilatedImage);
+        dilatedImage = null;
     }
 }
 

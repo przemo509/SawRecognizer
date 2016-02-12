@@ -207,4 +207,45 @@ public class ImageProcessor {
         }
         return object;
     }
+
+    public static boolean[][] dilate(boolean[][] image, int maxDilationSteps) {
+        boolean[][] result = image;
+
+        int dilationStep = 0;
+        while (!stopDilation(dilationStep, maxDilationSteps)) {
+            result = dilateOnce(result);
+            dilationStep++;
+        }
+
+        return result;
+    }
+
+    private static boolean stopDilation(int dilationStep, int maxDilationSteps) {
+        return dilationStep > maxDilationSteps;
+    }
+
+    private static boolean[][] dilateOnce(boolean[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] result = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 1; i < imageWidth - 1; i++) {
+            for (int j = 1; j < imageHeight - 1; j++) {
+                result[i][j] = dilatePixel(image, i, j);
+            }
+        }
+        return result;
+    }
+
+    private static boolean dilatePixel(boolean[][] image, int x, int y) {
+        for (int i = -1; i <= 1; i++) {
+            int xi = x + i;
+            for (int j = -1; j <= 1; j++) {
+                int yj = y + j;
+                if (!image[xi][yj]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

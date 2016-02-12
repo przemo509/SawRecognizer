@@ -21,6 +21,12 @@ public class MainToolBar extends JToolBar {
     private JButton fillGaps;
     private JSlider erodeSteps;
 
+    private JButton dilate;
+
+    private JPanel detectCornersPanel;
+    private JButton detectCorners;
+    private JSlider dilateSteps;
+
     public static MainToolBar getInstance() {
         return instance;
     }
@@ -38,6 +44,8 @@ public class MainToolBar extends JToolBar {
         addMedian();
         addErosion();
         addFillGaps();
+        addDilation();
+        addDetectCorners();
         addStatus();
     }
 
@@ -53,6 +61,8 @@ public class MainToolBar extends JToolBar {
         medianPanel.setVisible(median == buttonToEnable);
         erode.setVisible(erode == buttonToEnable);
         fillGapsPanel.setVisible(fillGaps == buttonToEnable);
+        dilate.setVisible(dilate == buttonToEnable);
+        detectCornersPanel.setVisible(detectCorners == buttonToEnable);
     }
 
     public void disableAllButtons() {
@@ -81,6 +91,14 @@ public class MainToolBar extends JToolBar {
 
     public void enableFillGapsButton() {
         disableButtonsButOne(fillGaps);
+    }
+
+    public void enableDilateButton() {
+        disableButtonsButOne(dilate);
+    }
+
+    public void enableDetectCorners() {
+        disableButtonsButOne(detectCorners);
     }
 
     private void addGrayScale() {
@@ -143,6 +161,31 @@ public class MainToolBar extends JToolBar {
         fillGapsPanel.add(erodeSteps);
 
         add(fillGapsPanel);
+    }
+
+    private void addDilation() {
+        dilate = new JButton("Dylacja");
+        dilate.addActionListener(e -> MainWindow.getInstance().createDilatedImage(dilateSteps.getValue()));
+        add(dilate);
+    }
+
+    private void addDetectCorners() {
+        detectCornersPanel = new JPanel();
+
+        detectCorners = new JButton("Oznacz narożniki");
+//        detectCorners.addActionListener(e -> MainWindow.getInstance().createDetectedCornersImage());
+        detectCornersPanel.add(detectCorners);
+
+        JLabel stepsLabel = new JLabel("");
+        detectCornersPanel.add(stepsLabel);
+        dilateSteps = new JSlider(0, 20, 5);
+        dilateSteps.addChangeListener(e -> {
+            stepsLabel.setText("Liczba iteracji: [" + dilateSteps.getValue() + "]");
+            MainWindow.getInstance().createDilatedImage(dilateSteps.getValue());
+        });
+        detectCornersPanel.add(dilateSteps);
+
+        add(detectCornersPanel);
     }
 
     private void addStatus() {
