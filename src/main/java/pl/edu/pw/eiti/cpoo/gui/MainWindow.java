@@ -170,7 +170,7 @@ public class MainWindow extends JFrame {
         clearTabsFromStep(cornersImage);
 
         cornersImage = new BinaryImagePanel(ImageProcessor.detectCorners(dilatedImage.getImage()));
-        int corners = cornersImage.markPixels(5);
+        int corners = cornersImage.markPixels(10);
         tabbedPane.addTab("Narożniki (" + corners + ")", cornersImage);
         tabbedPane.setSelectedComponent(cornersImage);
     }
