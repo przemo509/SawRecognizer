@@ -3,6 +3,7 @@ package pl.edu.pw.eiti.cpoo.gui.panel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.Array;
 
 public abstract class ImagePanel extends JPanel implements MouseWheelListener, MouseListener, MouseMotionListener {
     public static final int SCALING_SPEED = 1;
@@ -16,6 +17,7 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
     private int currentTranslateY;
     private static int accumulatedTranslateX = 0;
     private static int accumulatedTranslateY = 0;
+    private static boolean[][] markedPixels;
 
     public ImagePanel(int imageWidth, int imageHeight) {
         this.imageWidth = imageWidth;
@@ -30,6 +32,7 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
         currentDragStartY = 0;
         currentTranslateX = 0;
         currentTranslateY = 0;
+        markedPixels = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
     }
 
     @Override
@@ -43,8 +46,12 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
     private void drawImage(Graphics g) {
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
-                g.setColor(getColor(i, j));
-                g.fillRect(pixelSize*i, pixelSize*j, pixelSize, pixelSize);
+                Color c = getColor(i, j);
+                if(markedPixels[i][j]) {
+                    c = new Color(255 - c.getRed(), c.getGreen(), c.getBlue());
+                }
+                g.setColor(c);
+                g.fillRect(pixelSize * i, pixelSize * j, pixelSize, pixelSize);
             }
         }
 
@@ -113,7 +120,10 @@ public abstract class ImagePanel extends JPanel implements MouseWheelListener, M
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        // do nothing
+        int imageX = (e.getX() - accumulatedTranslateX) / pixelSize;
+        int imageY = (e.getY() - accumulatedTranslateY) / pixelSize;
+        markedPixels[imageX][imageY] ^= true;
+        repaint();
     }
 
     @Override
