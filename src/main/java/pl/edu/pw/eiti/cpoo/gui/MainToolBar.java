@@ -173,12 +173,12 @@ public class MainToolBar extends JToolBar {
         detectCornersPanel = new JPanel();
 
         detectCorners = new JButton("Oznacz narożniki");
-//        detectCorners.addActionListener(e -> MainWindow.getInstance().createDetectedCornersImage());
+        detectCorners.addActionListener(e -> MainWindow.getInstance().createDetectedCornersImage());
         detectCornersPanel.add(detectCorners);
 
         JLabel stepsLabel = new JLabel("");
         detectCornersPanel.add(stepsLabel);
-        dilateSteps = new JSlider(0, 20, 5);
+        dilateSteps = new JSlider(0, 20, 15);
         dilateSteps.addChangeListener(e -> {
             stepsLabel.setText("Liczba iteracji: [" + dilateSteps.getValue() + "]");
             MainWindow.getInstance().createDilatedImage(dilateSteps.getValue());

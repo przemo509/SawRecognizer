@@ -29,6 +29,7 @@ public class MainWindow extends JFrame {
     private BinaryImagePanel erodedImage;
     private BinaryImagePanel filledGapsImage;
     private BinaryImagePanel dilatedImage;
+    private BinaryImagePanel cornersImage;
 
     public static MainWindow getInstance() {
         return instance;
@@ -154,7 +155,20 @@ public class MainWindow extends JFrame {
         tabbedPane.setSelectedComponent(dilatedImage);
     }
 
+    public void createDetectedCornersImage() {
+        clearTabsFromStep(cornersImage);
+
+        cornersImage = new BinaryImagePanel(ImageProcessor.detectCorners(dilatedImage.getImage()));
+        tabbedPane.addTab("Narożniki", cornersImage);
+        tabbedPane.setSelectedComponent(cornersImage);
+    }
+
     private void clearTabsFromStep(ImagePanel imagePanel) {
+        clearCornersTab();
+        if(imagePanel == cornersImage) {
+            return;
+        }
+
         clearDilatedTab();
         if(imagePanel == dilatedImage) {
             return;
@@ -224,6 +238,11 @@ public class MainWindow extends JFrame {
     private void clearDilatedTab() {
         tabbedPane.remove(dilatedImage);
         dilatedImage = null;
+    }
+
+    private void clearCornersTab() {
+        tabbedPane.remove(cornersImage);
+        cornersImage = null;
     }
 }
 

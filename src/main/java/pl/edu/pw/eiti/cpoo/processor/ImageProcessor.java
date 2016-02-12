@@ -7,6 +7,7 @@ import java.util.Stack;
 public class ImageProcessor {
     public static final int BYTE = 256;
     public static final int BACKGROUND_VALUE = 255;
+    private static final int MAX_CORNER_NEIGHBOURS = 3;
 
     public static int[][] makeGrayScale(int[][] rgb) {
         int imageWidth = rgb.length;
@@ -247,5 +248,35 @@ public class ImageProcessor {
             }
         }
         return true;
+    }
+
+    public static boolean[][] detectCorners(boolean[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] result = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 1; i < imageWidth - 1; i++) {
+            for (int j = 1; j < imageHeight - 1; j++) {
+                result[i][j] = detectCornerPixel(image, i, j);
+            }
+        }
+        return result;
+    }
+
+    private static boolean detectCornerPixel(boolean[][] image, int x, int y) {
+        if(!image[x][y]) {
+            return false;
+        }
+
+        int neighbours = 0;
+        for (int i = -1; i <= 1; i++) {
+            int xi = x + i;
+            for (int j = -1; j <= 1; j++) {
+                int yj = y + j;
+                if (image[xi][yj] && i + j != 0) {
+                    neighbours++;
+                }
+            }
+        }
+        return neighbours >= 1 && neighbours <= MAX_CORNER_NEIGHBOURS;
     }
 }
