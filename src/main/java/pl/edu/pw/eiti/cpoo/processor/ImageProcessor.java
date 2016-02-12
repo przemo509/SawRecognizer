@@ -266,7 +266,7 @@ public class ImageProcessor {
     }
 
     private static boolean detectCornerPixel(boolean[][] image, int x, int y) {
-        if(!image[x][y]) {
+        if (!image[x][y]) {
             return false;
         }
 
@@ -275,7 +275,7 @@ public class ImageProcessor {
             int xi = x + i;
             for (int j = -1; j <= 1; j++) {
                 int yj = y + j;
-                if (image[xi][yj] && i + j != 0) {
+                if (image[xi][yj] && (i != 0 || j != 0)) {
                     neighbours++;
                 }
             }
