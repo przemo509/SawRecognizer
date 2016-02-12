@@ -92,7 +92,7 @@ public class MainToolBar extends JToolBar {
 
         JLabel thresholdLabel = new JLabel("");
         todoPanel.add(thresholdLabel);
-        binarizedThreshold = new JSlider(0, 255, 10);
+        binarizedThreshold = new JSlider(0, 255, 130);
         binarizedThreshold.addChangeListener(e -> {
             thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
             MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
