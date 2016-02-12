@@ -176,4 +176,35 @@ public class ImageProcessor {
         }
         return false;
     }
+
+    public static boolean[][] fillGaps(boolean[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] visited = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        boolean[][] object = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 0; i < imageWidth; i++) {
+            for (int j = 0; j < imageHeight; j++) {
+                object[i][j] = true;
+            }
+        }
+        Stack<Point> pixelStack = new Stack<>();
+
+        // starting points in all corners
+        pixelStack.push(new Point(0, 0));
+        pixelStack.push(new Point(imageWidth - 1, 0));
+        pixelStack.push(new Point(0, imageHeight - 1));
+        pixelStack.push(new Point(imageWidth - 1, imageHeight - 1));
+
+        while (!pixelStack.empty()) {
+            Point p = pixelStack.pop();
+            visited[p.x][p.y] = true;
+
+            if (!image[p.x][p.y]) {
+                // still background
+                object[p.x][p.y] = false;
+                pushNeighboursToStack(pixelStack, visited, p);
+            }
+        }
+        return object;
+    }
 }

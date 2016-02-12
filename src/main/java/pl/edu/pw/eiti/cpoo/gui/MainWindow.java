@@ -26,6 +26,7 @@ public class MainWindow extends JFrame {
     private BinaryImagePanel binarizedImage;
     private BinaryImagePanel medianImage;
     private BinaryImagePanel erodedImage;
+    private BinaryImagePanel filledGapsImage;
 
     public static MainWindow getInstance() {
         return instance;
@@ -68,7 +69,7 @@ public class MainWindow extends JFrame {
         } else if (selectedTab == medianImage) {
             MainToolBar.getInstance().enableErodeButton();
         } else if (selectedTab == erodedImage) {
-            MainToolBar.getInstance().enableTodoButton();
+            MainToolBar.getInstance().enableFillGapsButton();
         } else {
             MainToolBar.getInstance().disableAllButtons();
         }
@@ -97,6 +98,7 @@ public class MainWindow extends JFrame {
         clearBinarizedTab();
         clearMedianImage();
         clearErodedTab();
+        clearFillGapsTab();
 
         grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
         tabbedPane.addTab("Skala szarości", grayScaleImage);
@@ -108,6 +110,7 @@ public class MainWindow extends JFrame {
         clearBinarizedTab();
         clearMedianImage();
         clearErodedTab();
+        clearFillGapsTab();
 
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
@@ -118,6 +121,7 @@ public class MainWindow extends JFrame {
         clearBinarizedTab();
         clearMedianImage();
         clearErodedTab();
+        clearFillGapsTab();
 
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
         tabbedPane.addTab("Binarny", binarizedImage);
@@ -127,19 +131,28 @@ public class MainWindow extends JFrame {
     public void createMedianImage() {
         clearMedianImage();
         clearErodedTab();
+        clearFillGapsTab();
 
         medianImage = new BinaryImagePanel(ImageProcessor.median(binarizedImage.getImage()));
         tabbedPane.addTab("Po medianie", medianImage);
         tabbedPane.setSelectedComponent(medianImage);
-
     }
 
     public void createErodedImage(int erosionSteps) {
         clearErodedTab();
+        clearFillGapsTab();
 
         erodedImage = new BinaryImagePanel(ImageProcessor.erode(medianImage.getImage(), erosionSteps));
         tabbedPane.addTab("Po erozji", erodedImage);
         tabbedPane.setSelectedComponent(erodedImage);
+    }
+
+    public void createFilledGapsImage() {
+        clearFillGapsTab();
+
+        filledGapsImage = new BinaryImagePanel(ImageProcessor.fillGaps(erodedImage.getImage()));
+        tabbedPane.addTab("Po wypełnieniu", filledGapsImage);
+        tabbedPane.setSelectedComponent(filledGapsImage);
 
     }
 
@@ -166,6 +179,11 @@ public class MainWindow extends JFrame {
     private void clearErodedTab() {
         tabbedPane.remove(erodedImage);
         erodedImage = null;
+    }
+
+    private void clearFillGapsTab() {
+        tabbedPane.remove(filledGapsImage);
+        filledGapsImage = null;
     }
 }
 

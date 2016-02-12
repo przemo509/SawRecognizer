@@ -17,8 +17,8 @@ public class MainToolBar extends JToolBar {
 
     private JButton erode;
 
-    private JPanel todoPanel;
-    private JButton todo;
+    private JPanel fillGapsPanel;
+    private JButton fillGaps;
     private JSlider erodeSteps;
 
     public static MainToolBar getInstance() {
@@ -37,7 +37,7 @@ public class MainToolBar extends JToolBar {
         addBinarize();
         addMedian();
         addErosion();
-        addTodo();
+        addFillGaps();
         addStatus();
     }
 
@@ -52,7 +52,7 @@ public class MainToolBar extends JToolBar {
         binarize.setVisible(binarize == buttonToEnable);
         medianPanel.setVisible(median == buttonToEnable);
         erode.setVisible(erode == buttonToEnable);
-        todoPanel.setVisible(todo == buttonToEnable);
+        fillGapsPanel.setVisible(fillGaps == buttonToEnable);
     }
 
     public void disableAllButtons() {
@@ -79,8 +79,8 @@ public class MainToolBar extends JToolBar {
         disableButtonsButOne(erode);
     }
 
-    public void enableTodoButton() {
-        disableButtonsButOne(todo);
+    public void enableFillGapsButton() {
+        disableButtonsButOne(fillGaps);
     }
 
     private void addGrayScale() {
@@ -126,23 +126,23 @@ public class MainToolBar extends JToolBar {
         add(erode);
     }
 
-    private void addTodo() {
-        todoPanel = new JPanel();
+    private void addFillGaps() {
+        fillGapsPanel = new JPanel();
 
-        todo = new JButton("TODO");
-//        todo.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizeThreshold.getValue(), binarizeTailFactor.getValue() / 100.0));
-        todoPanel.add(todo);
+        fillGaps = new JButton("Wypełnij puste obszary");
+        fillGaps.addActionListener(e -> MainWindow.getInstance().createFilledGapsImage());
+        fillGapsPanel.add(fillGaps);
 
         JLabel stepsLabel = new JLabel("");
-        todoPanel.add(stepsLabel);
+        fillGapsPanel.add(stepsLabel);
         erodeSteps = new JSlider(0, 20, 3);
         erodeSteps.addChangeListener(e -> {
             stepsLabel.setText("Liczba iteracji: [" + erodeSteps.getValue() + "]");
             MainWindow.getInstance().createErodedImage(erodeSteps.getValue());
         });
-        todoPanel.add(erodeSteps);
+        fillGapsPanel.add(erodeSteps);
 
-        add(todoPanel);
+        add(fillGapsPanel);
     }
 
     private void addStatus() {
