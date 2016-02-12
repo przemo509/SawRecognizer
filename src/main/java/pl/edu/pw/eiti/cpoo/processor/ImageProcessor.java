@@ -55,7 +55,6 @@ public class ImageProcessor {
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
                 equalizedImage[i][j] = hEq[image[i][j]];
-                int a;
             }
         }
 
@@ -106,6 +105,35 @@ public class ImageProcessor {
             return;
         }
         stack.push(new Point(x, y));
+    }
+
+    public static boolean[][] median(boolean[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] result = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 1; i < imageWidth - 1; i++) {
+            for (int j = 1; j < imageHeight - 1; j++) {
+                result[i][j] = medianPixel(image, i, j);
+            }
+        }
+        return result;
+    }
+
+    private static boolean medianPixel(boolean[][] image, int x, int y) {
+        int objectPixels = 0;
+        for (int i = -1; i <= 1; i++) {
+            int xi = x + i;
+            for (int j = -1; j <= 1; j++) {
+                int yj = y + j;
+                if (image[xi][yj]) {
+                    objectPixels++;
+                }
+                if (objectPixels >= 5) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean[][] erode(boolean[][] image, int maxErosionSteps) {

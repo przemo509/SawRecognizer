@@ -24,6 +24,7 @@ public class MainWindow extends JFrame {
     private GrayScaleImagePanel grayScaleImage;
     private GrayScaleImagePanel equalHistogramImage;
     private BinaryImagePanel binarizedImage;
+    private BinaryImagePanel medianImage;
     private BinaryImagePanel erodedImage;
 
     public static MainWindow getInstance() {
@@ -63,6 +64,8 @@ public class MainWindow extends JFrame {
         } else if (selectedTab == equalHistogramImage) {
             MainToolBar.getInstance().enableBinarizeButton();
         } else if (selectedTab == binarizedImage) {
+            MainToolBar.getInstance().enableMedianButton();
+        } else if (selectedTab == medianImage) {
             MainToolBar.getInstance().enableErodeButton();
         } else if (selectedTab == erodedImage) {
             MainToolBar.getInstance().enableTodoButton();
@@ -92,6 +95,7 @@ public class MainWindow extends JFrame {
         clearGrayScaleTab();
         clearEqualizedHistogramTab();
         clearBinarizedTab();
+        clearMedianImage();
         clearErodedTab();
 
         grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
@@ -102,6 +106,7 @@ public class MainWindow extends JFrame {
     public void createEqualHistogramImage() {
         clearEqualizedHistogramTab();
         clearBinarizedTab();
+        clearMedianImage();
         clearErodedTab();
 
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
@@ -111,6 +116,7 @@ public class MainWindow extends JFrame {
 
     public void createBinarizedImage(int threshold) {
         clearBinarizedTab();
+        clearMedianImage();
         clearErodedTab();
 
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
@@ -118,10 +124,20 @@ public class MainWindow extends JFrame {
         tabbedPane.setSelectedComponent(binarizedImage);
     }
 
+    public void createMedianImage() {
+        clearMedianImage();
+        clearErodedTab();
+
+        medianImage = new BinaryImagePanel(ImageProcessor.median(binarizedImage.getImage()));
+        tabbedPane.addTab("Po medianie", medianImage);
+        tabbedPane.setSelectedComponent(medianImage);
+
+    }
+
     public void createErodedImage(int erosionSteps) {
         clearErodedTab();
 
-        erodedImage = new BinaryImagePanel(ImageProcessor.erode(binarizedImage.getImage(), erosionSteps));
+        erodedImage = new BinaryImagePanel(ImageProcessor.erode(medianImage.getImage(), erosionSteps));
         tabbedPane.addTab("Po erozji", erodedImage);
         tabbedPane.setSelectedComponent(erodedImage);
 
@@ -140,6 +156,11 @@ public class MainWindow extends JFrame {
     private void clearBinarizedTab() {
         tabbedPane.remove(binarizedImage);
         binarizedImage = null;
+    }
+
+    public void clearMedianImage() {
+        tabbedPane.remove(medianImage);
+        medianImage = null;
     }
 
     private void clearErodedTab() {
