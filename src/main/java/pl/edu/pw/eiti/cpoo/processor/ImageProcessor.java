@@ -71,7 +71,12 @@ public class ImageProcessor {
             }
         }
         Stack<Pixel> pixelStack = new Stack<>();
-        pixelStack.push(new Pixel(0, 0, image[0][0])); // add first pixel to stack
+
+        // starting points in all corners
+        pixelStack.push(new Pixel(0, 0, image[0][0]));
+        pixelStack.push(new Pixel(imageWidth - 1, 0, image[imageWidth - 1][0]));
+        pixelStack.push(new Pixel(0, imageHeight - 1, image[0][imageHeight - 1]));
+        pixelStack.push(new Pixel(imageWidth - 1, imageHeight - 1, image[imageWidth - 1][imageHeight - 1]));
 
         while (!pixelStack.empty()) {
             Pixel p = pixelStack.pop();
