@@ -11,9 +11,13 @@ public class MainToolBar extends JToolBar {
     private JButton equalizedHistogram;
     private JButton binarize;
 
+    private JPanel erosionPanel;
+    private JButton erode;
+    private JSlider binarizedThreshold;
+
     private JPanel todoPanel;
     private JButton todo;
-    private JSlider binarizedThreshold;
+    private JSlider erodeSteps;
 
     public static MainToolBar getInstance() {
         return instance;
@@ -29,6 +33,7 @@ public class MainToolBar extends JToolBar {
         addGrayScale();
         addEqualizedHistogram();
         addBinarize();
+        addErosion();
         addTodo();
         addStatus();
     }
@@ -42,6 +47,7 @@ public class MainToolBar extends JToolBar {
         grayScale.setVisible(grayScale == buttonToEnable);
         equalizedHistogram.setVisible(equalizedHistogram == buttonToEnable);
         binarize.setVisible(binarize == buttonToEnable);
+        erosionPanel.setVisible(erode == buttonToEnable);
         todoPanel.setVisible(todo == buttonToEnable);
     }
 
@@ -59,6 +65,10 @@ public class MainToolBar extends JToolBar {
 
     public void enableBinarizeButton() {
         disableButtonsButOne(binarize);
+    }
+
+    public void enableErodeButton() {
+        disableButtonsButOne(erode);
     }
 
     public void enableTodoButton() {
@@ -83,6 +93,25 @@ public class MainToolBar extends JToolBar {
         add(binarize);
     }
 
+    private void addErosion() {
+        erosionPanel = new JPanel();
+
+        erode = new JButton("Eroduj");
+        erode.addActionListener(e -> MainWindow.getInstance().createErodedImage(erodeSteps.getValue()));
+        erosionPanel.add(erode);
+
+        JLabel thresholdLabel = new JLabel("");
+        erosionPanel.add(thresholdLabel);
+        binarizedThreshold = new JSlider(0, 255, 130);
+        binarizedThreshold.addChangeListener(e -> {
+            thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
+            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
+        });
+        erosionPanel.add(binarizedThreshold);
+
+        add(erosionPanel);
+    }
+
     private void addTodo() {
         todoPanel = new JPanel();
 
@@ -90,14 +119,14 @@ public class MainToolBar extends JToolBar {
 //        todo.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizeThreshold.getValue(), binarizeTailFactor.getValue() / 100.0));
         todoPanel.add(todo);
 
-        JLabel thresholdLabel = new JLabel("");
-        todoPanel.add(thresholdLabel);
-        binarizedThreshold = new JSlider(0, 255, 130);
-        binarizedThreshold.addChangeListener(e -> {
-            thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
-            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
+        JLabel stepsLabel = new JLabel("");
+        todoPanel.add(stepsLabel);
+        erodeSteps = new JSlider(0, 20, 3);
+        erodeSteps.addChangeListener(e -> {
+            stepsLabel.setText("Liczba iteracji: [" + erodeSteps.getValue() + "]");
+            MainWindow.getInstance().createErodedImage(erodeSteps.getValue());
         });
-        todoPanel.add(binarizedThreshold);
+        todoPanel.add(erodeSteps);
 
         add(todoPanel);
     }

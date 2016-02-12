@@ -55,6 +55,7 @@ public class ImageProcessor {
         for (int i = 0; i < imageWidth; i++) {
             for (int j = 0; j < imageHeight; j++) {
                 equalizedImage[i][j] = hEq[image[i][j]];
+                int a;
             }
         }
 
@@ -105,5 +106,46 @@ public class ImageProcessor {
             return;
         }
         stack.push(new Point(x, y));
+    }
+
+    public static boolean[][] erode(boolean[][] image, int maxErosionSteps) {
+        boolean[][] result = image;
+
+        int erosionStep = 0;
+        while (!stopErosion(erosionStep, maxErosionSteps)) {
+            result = erodeOnce(result);
+            erosionStep++;
+        }
+
+        return result;
+    }
+
+    private static boolean stopErosion(int erosionStep, int maxErosionSteps) {
+        return erosionStep > maxErosionSteps;
+    }
+
+    private static boolean[][] erodeOnce(boolean[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        boolean[][] result = (boolean[][]) Array.newInstance(boolean.class, imageWidth, imageHeight);
+        for (int i = 1; i < imageWidth - 1; i++) {
+            for (int j = 1; j < imageHeight - 1; j++) {
+                result[i][j] = erodePixel(image, i, j);
+            }
+        }
+        return result;
+    }
+
+    private static boolean erodePixel(boolean[][] image, int x, int y) {
+        for (int i = -1; i <= 1; i++) {
+            int xi = x + i;
+            for (int j = -1; j <= 1; j++) {
+                int yj = y + j;
+                if (image[xi][yj]) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

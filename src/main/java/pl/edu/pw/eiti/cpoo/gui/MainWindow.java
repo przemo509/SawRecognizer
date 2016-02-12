@@ -24,6 +24,7 @@ public class MainWindow extends JFrame {
     private GrayScaleImagePanel grayScaleImage;
     private GrayScaleImagePanel equalHistogramImage;
     private BinaryImagePanel binarizedImage;
+    private BinaryImagePanel erodedImage;
 
     public static MainWindow getInstance() {
         return instance;
@@ -62,6 +63,8 @@ public class MainWindow extends JFrame {
         } else if (selectedTab == equalHistogramImage) {
             MainToolBar.getInstance().enableBinarizeButton();
         } else if (selectedTab == binarizedImage) {
+            MainToolBar.getInstance().enableErodeButton();
+        } else if (selectedTab == erodedImage) {
             MainToolBar.getInstance().enableTodoButton();
         } else {
             MainToolBar.getInstance().disableAllButtons();
@@ -89,6 +92,7 @@ public class MainWindow extends JFrame {
         clearGrayScaleTab();
         clearEqualizedHistogramTab();
         clearBinarizedTab();
+        clearErodedTab();
 
         grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
         tabbedPane.addTab("Skala szarości", grayScaleImage);
@@ -98,6 +102,7 @@ public class MainWindow extends JFrame {
     public void createEqualHistogramImage() {
         clearEqualizedHistogramTab();
         clearBinarizedTab();
+        clearErodedTab();
 
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
@@ -106,10 +111,20 @@ public class MainWindow extends JFrame {
 
     public void createBinarizedImage(int threshold) {
         clearBinarizedTab();
+        clearErodedTab();
 
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
         tabbedPane.addTab("Binarny", binarizedImage);
         tabbedPane.setSelectedComponent(binarizedImage);
+    }
+
+    public void createErodedImage(int erosionSteps) {
+        clearErodedTab();
+
+        erodedImage = new BinaryImagePanel(ImageProcessor.erode(binarizedImage.getImage(), erosionSteps));
+        tabbedPane.addTab("Po erozji", erodedImage);
+        tabbedPane.setSelectedComponent(erodedImage);
+
     }
 
     private void clearGrayScaleTab() {
@@ -125,6 +140,11 @@ public class MainWindow extends JFrame {
     private void clearBinarizedTab() {
         tabbedPane.remove(binarizedImage);
         binarizedImage = null;
+    }
+
+    private void clearErodedTab() {
+        tabbedPane.remove(erodedImage);
+        erodedImage = null;
     }
 }
 

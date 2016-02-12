@@ -14,4 +14,8 @@ public class BinaryImagePanel extends ImagePanel {
     public Color getColor(int i, int j) {
         return image[i][j] ? Color.BLACK : Color.WHITE;
     }
+
+    public boolean[][] getImage() {
+        return image;
+    }
 }
