@@ -1,6 +1,7 @@
 package pl.edu.pw.eiti.cpoo.gui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainToolBar extends JToolBar {
     private static MainToolBar instance = new MainToolBar();
@@ -32,9 +33,9 @@ public class MainToolBar extends JToolBar {
     }
 
     private MainToolBar() {
+        setLayout(new FlowLayout(FlowLayout.LEFT));
         addComponents();
         resetState();
-        setFloatable(false);
     }
 
     private void addComponents() {
@@ -120,7 +121,7 @@ public class MainToolBar extends JToolBar {
     }
 
     private void addMedian() {
-        medianPanel = new JPanel();
+        medianPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         median = new JButton("Mediana");
         median.addActionListener(e -> MainWindow.getInstance().createMedianImage());
@@ -145,7 +146,7 @@ public class MainToolBar extends JToolBar {
     }
 
     private void addFillGaps() {
-        fillGapsPanel = new JPanel();
+        fillGapsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         fillGaps = new JButton("Wypełnij puste obszary");
         fillGaps.addActionListener(e -> MainWindow.getInstance().createFilledGapsImage());
@@ -170,7 +171,7 @@ public class MainToolBar extends JToolBar {
     }
 
     private void addDetectCorners() {
-        detectCornersPanel = new JPanel();
+        detectCornersPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         detectCorners = new JButton("Oznacz narożniki");
         detectCorners.addActionListener(e -> MainWindow.getInstance().createDetectedCornersImage());
