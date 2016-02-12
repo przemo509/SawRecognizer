@@ -164,45 +164,53 @@ public class MainWindow extends JFrame {
     }
 
     private void clearTabsFromStep(ImagePanel imagePanel) {
-        clearCornersTab();
         if(imagePanel == cornersImage) {
+            clearCornersTab();
             return;
         }
+        clearCornersTab();
 
-        clearDilatedTab();
         if(imagePanel == dilatedImage) {
+            clearDilatedTab();
             return;
         }
+        clearDilatedTab();
 
-        clearFillGapsTab();
         if(imagePanel == filledGapsImage) {
+            clearFillGapsTab();
             return;
         }
+        clearFillGapsTab();
 
-        clearErodedTab();
         if(imagePanel == erodedImage) {
+            clearErodedTab();
             return;
         }
+        clearErodedTab();
 
-        clearMedianImage();
         if(imagePanel == medianImage) {
+            clearMedianImage();
             return;
         }
+        clearMedianImage();
 
-        clearBinarizedTab();
         if(imagePanel == binarizedImage) {
+            clearBinarizedTab();
             return;
         }
+        clearBinarizedTab();
 
-        clearEqualizedHistogramTab();
         if(imagePanel == equalHistogramImage) {
+            clearEqualizedHistogramTab();
             return;
         }
+        clearEqualizedHistogramTab();
 
-        clearGrayScaleTab();
         if(imagePanel == grayScaleImage) {
+            clearGrayScaleTab();
             return;
         }
+        clearGrayScaleTab();
     }
 
     private void clearGrayScaleTab() {
