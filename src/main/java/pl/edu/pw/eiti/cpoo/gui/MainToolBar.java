@@ -143,11 +143,14 @@ public class MainToolBar extends JToolBar {
 
         JLabel thresholdLabel = new JLabel("");
         medianPanel.add(thresholdLabel);
-        binarizedThreshold = new JSlider(0, 255, 130);
+        binarizedThreshold = new JSlider(0, 255);
         binarizedThreshold.addChangeListener(e -> {
             thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
-            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
+            if (MainWindow.getInstance() != null) {
+                MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
+            }
         });
+        binarizedThreshold.setValue(130);
         medianPanel.add(binarizedThreshold);
 
         add(medianPanel);
@@ -168,11 +171,14 @@ public class MainToolBar extends JToolBar {
 
         JLabel stepsLabel = new JLabel("");
         fillGapsPanel.add(stepsLabel);
-        erodeSteps = new JSlider(0, 20, 3);
+        erodeSteps = new JSlider(0, 20);
         erodeSteps.addChangeListener(e -> {
             stepsLabel.setText("Liczba iteracji: [" + erodeSteps.getValue() + "]");
-            MainWindow.getInstance().createErodedImage(erodeSteps.getValue());
+            if (MainWindow.getInstance() != null) {
+                MainWindow.getInstance().createErodedImage(erodeSteps.getValue());
+            }
         });
+        erodeSteps.setValue(3);
         fillGapsPanel.add(erodeSteps);
 
         add(fillGapsPanel);
@@ -193,11 +199,14 @@ public class MainToolBar extends JToolBar {
 
         JLabel stepsLabel = new JLabel("");
         detectCornersPanel.add(stepsLabel);
-        dilateSteps = new JSlider(0, 20, 15);
+        dilateSteps = new JSlider(0, 20);
         dilateSteps.addChangeListener(e -> {
             stepsLabel.setText("Liczba iteracji: [" + dilateSteps.getValue() + "]");
-            MainWindow.getInstance().createDilatedImage(dilateSteps.getValue());
+            if (MainWindow.getInstance() != null) {
+                MainWindow.getInstance().createDilatedImage(dilateSteps.getValue());
+            }
         });
+        dilateSteps.setValue(3);
         detectCornersPanel.add(dilateSteps);
 
         add(detectCornersPanel);
