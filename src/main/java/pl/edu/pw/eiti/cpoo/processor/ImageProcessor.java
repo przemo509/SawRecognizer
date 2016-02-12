@@ -2,6 +2,7 @@ package pl.edu.pw.eiti.cpoo.processor;
 
 import java.awt.*;
 import java.lang.reflect.Array;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class ImageProcessor {
@@ -20,6 +21,34 @@ public class ImageProcessor {
             }
         }
         return image;
+    }
+
+    public static int[][] median(int[][] image) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        int[][] result = (int[][]) Array.newInstance(int.class, imageWidth, imageHeight);
+        for (int i = 0; i < imageWidth; i++) {
+            for (int j = 0; j < imageHeight; j++) {
+                result[i][j] = medianPixel(image, i, j);
+            }
+        }
+        return result;
+    }
+
+    private static int medianPixel(int[][] image, int x, int y) {
+        int imageWidth = image.length;
+        int imageHeight = image[0].length;
+        PriorityQueue<Integer> pixels = new PriorityQueue<>();
+        for (int i = -3; i <= 3; i++) {
+            int xi = x + i;
+            for (int j = -3; j <= 3; j++) {
+                int yj = y + j;
+                if (xi >= 0 && xi < imageWidth && yj >= 0 && yj < imageHeight) {
+                    pixels.add(image[xi][yj]);
+                }
+            }
+        }
+        return (int) pixels.toArray()[pixels.size() / 2 + 1];
     }
 
     public static int[][] equalizeHistogram(int[][] image) {
@@ -50,7 +79,7 @@ public class ImageProcessor {
         int[] hEq = new int[BYTE]; // histogram equalized
         for (int i = 0; i < BYTE; i++) {
             hEq[i] = (int) ((hCum[i] - minHCum) * factor);
-            if(hEq[i] < 0 || hEq[i] >= BYTE) {
+            if (hEq[i] < 0 || hEq[i] >= BYTE) {
                 throw new IllegalStateException("Wrong histogram value!");
             }
         }

@@ -9,6 +9,8 @@ public class MainToolBar extends JToolBar {
     private JLabel status;
 
     private JButton grayScale;
+
+    private JButton preMedian;
     private JButton equalizedHistogram;
     private JButton binarize;
 
@@ -40,6 +42,7 @@ public class MainToolBar extends JToolBar {
 
     private void addComponents() {
         addGrayScale();
+        addPreMedian();
         addEqualizedHistogram();
         addBinarize();
         addMedian();
@@ -57,6 +60,7 @@ public class MainToolBar extends JToolBar {
 
     private void disableButtonsButOne(JButton buttonToEnable) {
         grayScale.setVisible(grayScale == buttonToEnable);
+        preMedian.setVisible(preMedian == buttonToEnable);
         equalizedHistogram.setVisible(equalizedHistogram == buttonToEnable);
         binarize.setVisible(binarize == buttonToEnable);
         medianPanel.setVisible(median == buttonToEnable);
@@ -72,6 +76,10 @@ public class MainToolBar extends JToolBar {
 
     public void enableGrayScaleButton() {
         disableButtonsButOne(grayScale);
+    }
+
+    public void enablePreMedianButton() {
+        disableButtonsButOne(preMedian);
     }
 
     public void enableEqualizedButton() {
@@ -106,6 +114,12 @@ public class MainToolBar extends JToolBar {
         grayScale = new JButton("Do skali szarości");
         grayScale.addActionListener(e -> MainWindow.getInstance().createGrayScaleImage());
         add(grayScale);
+    }
+
+    private void addPreMedian() {
+        preMedian = new JButton("Mediana");
+        preMedian.addActionListener(e -> MainWindow.getInstance().createPreMedianImage());
+        add(preMedian);
     }
 
     private void addEqualizedHistogram() {

@@ -23,6 +23,7 @@ public class MainWindow extends JFrame {
     private JTabbedPane tabbedPane;
     private RgbImagePanel originalImage;
     private GrayScaleImagePanel grayScaleImage;
+    private GrayScaleImagePanel preMedianImage;
     private GrayScaleImagePanel equalHistogramImage;
     private BinaryImagePanel binarizedImage;
     private BinaryImagePanel medianImage;
@@ -64,6 +65,8 @@ public class MainWindow extends JFrame {
         } else if (selectedTab == originalImage) {
             MainToolBar.getInstance().enableGrayScaleButton();
         } else if (selectedTab == grayScaleImage) {
+            MainToolBar.getInstance().enablePreMedianButton();
+        } else if (selectedTab == preMedianImage) {
             MainToolBar.getInstance().enableEqualizedButton();
         } else if (selectedTab == equalHistogramImage) {
             MainToolBar.getInstance().enableBinarizeButton();
@@ -107,10 +110,18 @@ public class MainWindow extends JFrame {
         tabbedPane.setSelectedComponent(grayScaleImage);
     }
 
+    public void createPreMedianImage() {
+        clearTabsFromStep(preMedianImage);
+
+        preMedianImage = new GrayScaleImagePanel(ImageProcessor.median(grayScaleImage.getImage()));
+        tabbedPane.addTab("Mediana #1", preMedianImage);
+        tabbedPane.setSelectedComponent(preMedianImage);
+    }
+
     public void createEqualHistogramImage() {
         clearTabsFromStep(equalHistogramImage);
 
-        equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
+        equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(preMedianImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
         tabbedPane.setSelectedComponent(equalHistogramImage);
     }
@@ -206,6 +217,12 @@ public class MainWindow extends JFrame {
         }
         clearEqualizedHistogramTab();
 
+        if(imagePanel == preMedianImage) {
+            clearPreMedianTab();
+            return;
+        }
+        clearPreMedianTab();
+
         if(imagePanel == grayScaleImage) {
             clearGrayScaleTab();
             return;
@@ -216,6 +233,11 @@ public class MainWindow extends JFrame {
     private void clearGrayScaleTab() {
         tabbedPane.remove(grayScaleImage);
         grayScaleImage = null;
+    }
+
+    private void clearPreMedianTab() {
+        tabbedPane.remove(preMedianImage);
+        preMedianImage = null;
     }
 
     private void clearEqualizedHistogramTab() {
