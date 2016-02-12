@@ -39,7 +39,7 @@ public class ImageProcessor {
         }
 
         int minHCum = hCum[0];
-        for (int i = 1; i < BYTE; i++) {
+        for (int i = 0; i < BYTE; i++) {
             if (hCum[i] != 0) {
                 minHCum = hCum[i];
                 break;
@@ -50,6 +50,9 @@ public class ImageProcessor {
         int[] hEq = new int[BYTE]; // histogram equalized
         for (int i = 0; i < BYTE; i++) {
             hEq[i] = (int) ((hCum[i] - minHCum) * factor);
+            if(hEq[i] < 0 || hEq[i] >= BYTE) {
+                throw new IllegalStateException("Wrong histogram value!");
+            }
         }
 
         int[][] equalizedImage = (int[][]) Array.newInstance(int.class, imageWidth, imageHeight);
