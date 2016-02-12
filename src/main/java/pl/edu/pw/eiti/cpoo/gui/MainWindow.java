@@ -3,6 +3,7 @@ package pl.edu.pw.eiti.cpoo.gui;
 
 import pl.edu.pw.eiti.cpoo.gui.panel.BinaryImagePanel;
 import pl.edu.pw.eiti.cpoo.gui.panel.GrayScaleImagePanel;
+import pl.edu.pw.eiti.cpoo.gui.panel.ImagePanel;
 import pl.edu.pw.eiti.cpoo.gui.panel.RgbImagePanel;
 import pl.edu.pw.eiti.cpoo.processor.ImageProcessor;
 
@@ -98,13 +99,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createGrayScaleImage() {
-        clearGrayScaleTab();
-        clearEqualizedHistogramTab();
-        clearBinarizedTab();
-        clearMedianImage();
-        clearErodedTab();
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(grayScaleImage);
 
         grayScaleImage = new GrayScaleImagePanel(ImageProcessor.makeGrayScale(originalImage.getRgbImage()));
         tabbedPane.addTab("Skala szarości", grayScaleImage);
@@ -112,12 +107,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createEqualHistogramImage() {
-        clearEqualizedHistogramTab();
-        clearBinarizedTab();
-        clearMedianImage();
-        clearErodedTab();
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(equalHistogramImage);
 
         equalHistogramImage = new GrayScaleImagePanel(ImageProcessor.equalizeHistogram(grayScaleImage.getImage()));
         tabbedPane.addTab("Wyrównany histogram", equalHistogramImage);
@@ -125,11 +115,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createBinarizedImage(int threshold) {
-        clearBinarizedTab();
-        clearMedianImage();
-        clearErodedTab();
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(binarizedImage);
 
         binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
         tabbedPane.addTab("Binarny", binarizedImage);
@@ -137,10 +123,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createMedianImage() {
-        clearMedianImage();
-        clearErodedTab();
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(medianImage);
 
         medianImage = new BinaryImagePanel(ImageProcessor.median(binarizedImage.getImage()));
         tabbedPane.addTab("Po medianie", medianImage);
@@ -148,9 +131,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createErodedImage(int erosionSteps) {
-        clearErodedTab();
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(erodedImage);
 
         erodedImage = new BinaryImagePanel(ImageProcessor.erode(medianImage.getImage(), erosionSteps));
         tabbedPane.addTab("Po erozji", erodedImage);
@@ -158,8 +139,7 @@ public class MainWindow extends JFrame {
     }
 
     public void createFilledGapsImage() {
-        clearFillGapsTab();
-        clearDilatedTab();
+        clearTabsFromStep(filledGapsImage);
 
         filledGapsImage = new BinaryImagePanel(ImageProcessor.fillGaps(erodedImage.getImage()));
         tabbedPane.addTab("Po wypełnieniu", filledGapsImage);
@@ -167,11 +147,48 @@ public class MainWindow extends JFrame {
     }
 
     public void createDilatedImage(int dilationSteps) {
-        clearDilatedTab();
+        clearTabsFromStep(dilatedImage);
 
         dilatedImage = new BinaryImagePanel(ImageProcessor.dilate(filledGapsImage.getImage(), dilationSteps));
         tabbedPane.addTab("Po dylacji", dilatedImage);
         tabbedPane.setSelectedComponent(dilatedImage);
+    }
+
+    private void clearTabsFromStep(ImagePanel imagePanel) {
+        clearDilatedTab();
+        if(imagePanel == dilatedImage) {
+            return;
+        }
+
+        clearFillGapsTab();
+        if(imagePanel == filledGapsImage) {
+            return;
+        }
+
+        clearErodedTab();
+        if(imagePanel == erodedImage) {
+            return;
+        }
+
+        clearMedianImage();
+        if(imagePanel == medianImage) {
+            return;
+        }
+
+        clearBinarizedTab();
+        if(imagePanel == binarizedImage) {
+            return;
+        }
+
+        clearEqualizedHistogramTab();
+        if(imagePanel == equalHistogramImage) {
+            return;
+        }
+
+        clearGrayScaleTab();
+        if(imagePanel == grayScaleImage) {
+            return;
+        }
     }
 
     private void clearGrayScaleTab() {
