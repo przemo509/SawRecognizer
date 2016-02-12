@@ -104,10 +104,10 @@ public class MainWindow extends JFrame {
         tabbedPane.setSelectedComponent(equalHistogramImage);
     }
 
-    public void createBinarizedImage(int threshold, double tailFactor) {
+    public void createBinarizedImage(int threshold) {
         clearBinarizedTab();
 
-        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold, tailFactor));
+        binarizedImage = new BinaryImagePanel(ImageProcessor.binarize(equalHistogramImage.getImage(), threshold));
         tabbedPane.addTab("Binarny", binarizedImage);
         tabbedPane.setSelectedComponent(binarizedImage);
     }

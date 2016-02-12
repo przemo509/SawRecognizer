@@ -14,7 +14,6 @@ public class MainToolBar extends JToolBar {
     private JPanel todoPanel;
     private JButton todo;
     private JSlider binarizedThreshold;
-    private JSlider binarizedTailFactor;
 
     public static MainToolBar getInstance() {
         return instance;
@@ -80,7 +79,7 @@ public class MainToolBar extends JToolBar {
 
     private void addBinarize() {
         binarize = new JButton("Na binarny");
-        binarize.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0));
+        binarize.addActionListener(e -> MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue()));
         add(binarize);
     }
 
@@ -96,18 +95,9 @@ public class MainToolBar extends JToolBar {
         binarizedThreshold = new JSlider(0, 255, 10);
         binarizedThreshold.addChangeListener(e -> {
             thresholdLabel.setText("Próg: [" + binarizedThreshold.getValue() + "]");
-            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0);
+            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue());
         });
         todoPanel.add(binarizedThreshold);
-
-        JLabel tailFactorLabel = new JLabel("");
-        todoPanel.add(tailFactorLabel);
-        binarizedTailFactor = new JSlider(0, 100, 10);
-        binarizedTailFactor.addChangeListener(e -> {
-            tailFactorLabel.setText("Wpływ sąsiadów: [" + binarizedTailFactor.getValue() + "]");
-            MainWindow.getInstance().createBinarizedImage(binarizedThreshold.getValue(), binarizedTailFactor.getValue() / 100.0);
-        });
-        todoPanel.add(binarizedTailFactor);
 
         add(todoPanel);
     }
